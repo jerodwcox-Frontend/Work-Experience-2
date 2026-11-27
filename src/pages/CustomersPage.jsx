@@ -117,7 +117,17 @@ export default function CustomersPage() {
         )}
       </div>
 
-      {editing && <PlanEditorDialog customer={editing} api={api} onClose={() => setEditing(null)} />}
+      {editing && (
+        <PlanEditorDialog
+          customer={editing}
+          api={api}
+          onClose={() => setEditing(null)}
+          onSaved={(updated) => {
+            setRows((current) => current.map((row) => (row.id === updated.id ? updated : row)))
+            setEditing(null)
+          }}
+        />
+      )}
     </div>
   )
 }
