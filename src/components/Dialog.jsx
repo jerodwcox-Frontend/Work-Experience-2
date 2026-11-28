@@ -17,12 +17,23 @@ export default function Dialog({ title, onClose, children, footer }) {
   }, [onClose])
 
   useEffect(() => {
+    const opener = document.activeElement
     const first = panelRef.current && panelRef.current.querySelector('input, select, button')
     if (first) first.focus()
+    return () => {
+      if (opener && opener.isConnected) opener.focus()
+    }
   }, [])
 
   return (
-    <div className="dialog-backdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="dialog-backdrop"
+      onMouseDown={(e) => {
+        if (e.target !== e.currentTarget) return
+        e.preventDefault()
+        onClose()
+      }}
+    >
       <div className="dialog" role="dialog" aria-modal="true" aria-label={title} ref={panelRef}>
         <div className="dialog__head">
           <h3 className="dialog__title">{title}</h3>
