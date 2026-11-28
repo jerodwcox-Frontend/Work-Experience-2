@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import client from '../api'
 import Sidebar from './Sidebar'
@@ -26,10 +26,13 @@ export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
 
   // Small wrapper so pages don't have to know which account is selected.
-  const api = {
-    get: (path) => client.get(withAccount(path, account)),
-    patch: (path, body) => client.patch(path, body),
-  }
+  const api = useMemo(
+    () => ({
+      get: (path) => client.get(withAccount(path, account)),
+      patch: (path, body) => client.patch(path, body),
+    }),
+    [account]
+  )
 
   useEffect(() => {
     let cancelled = false
